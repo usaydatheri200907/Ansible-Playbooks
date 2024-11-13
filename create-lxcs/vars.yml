@@ -1,0 +1,20 @@
+containers:
+  - container_name: "test1"
+    remote_server: "https://cloud-images.ubuntu.com/releases/"
+    image_alias: "22.04"
+    container_user: "ubuntu"
+    destination_path: "/home/ubuntu/.ssh/authorized_keys"
+  
+  - container_name: "test2"
+    remote_server: "https://cloud-images.ubuntu.com/releases/"
+    image_alias: "22.04"
+    container_user: "ubuntu"
+    destination_path: "/home/ubuntu/.ssh/authorized_keys"
+  
+  - container_name: "test3"
+    remote_server: "https://cloud-images.ubuntu.com/releases/"
+    image_alias: "22.04"
+    container_user: "ubuntu"
+    destination_path: "/home/ubuntu/.ssh/authorized_keys"
+
+ssh_public_key_path: "/home/ubuntu/.ssh/authorized_keys"

@@ -1,0 +1,83 @@
+---
+- name: Install Docker and set up monitoring stack
+  hosts: remote_host
+  become: true
+  become_user: root  # Run as root by default for elevated tasks
+  vars:
+    docker_compose_sample_path: "./docker-compose.yml" 
+
+  tasks:
+    - name: Ensure 'ubuntu' user is added to sudoers
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^ubuntu ALL=\(ALL\) NOPASSWD: ALL$'
+        line: 'ubuntu ALL=(ALL) NOPASSWD: ALL'
+      become: true  # Ensure root permissions for modifying sudoers
+
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        force_apt_get: yes  # Forces the use of apt-get, which accepts -y for yes
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Install prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Add Docker GPG key
+      ansible.builtin.command:
+        cmd: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg"
+      register: curl_output
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Save Docker GPG key to a file
+      ansible.builtin.shell:
+        cmd: "echo '{{ curl_output.stdout }}' | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg"
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Update apt cache again after adding Docker repository
+      apt:
+        update_cache: yes
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Install Docker and Docker Compose
+      apt:
+        name:
+          - docker
+          - docker-compose
+        state: present
+        force: yes
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Add user to Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      become: true  # Ensures this task runs with sudo privileges
+
+    - name: Create monitoring directory
+      file:
+        path: /home/{{ ansible_user }}/test-directory
+        state: directory
+        owner: "ubuntu"
+        mode: '0755'
+      become: false  # Run as the 'ubuntu' user without sudo privileges
+      become_user: ubuntu
+
+    - name: Copy Docker Compose sample file to the server
+      copy:
+        src: "{{ docker_compose_sample_path }}"
+        dest: /home/{{ ansible_user }}/test-directory/docker-compose.yml
+        owner: "ubuntu"
+        mode: '0644'
+      become: false  # Run as the 'ubuntu' user without sudo privileges
+      become_user: ubuntu

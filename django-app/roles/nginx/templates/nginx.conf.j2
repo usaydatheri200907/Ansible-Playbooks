@@ -1,0 +1,28 @@
+server {
+    listen 80;
+
+    access_log {{ nginx_log_dir }}/{{ project_name }}-access.log;
+    error_log {{ nginx_log_dir }}/{{ project_name }}-error.log;
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+    location /static/ {
+        root {{ project_dir }};
+    }
+    location /media/ {
+        include /etc/nginx/mime.types;
+        root {{ project_dir }};
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/{{ project_name }}.sock;
+    }
+
+    # Security headers
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Frame-Options SAMEORIGIN;
+}
