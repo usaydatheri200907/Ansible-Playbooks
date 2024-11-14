@@ -1,3 +1,0 @@
-this ansible script is for:
-- downloading docker and docker compose on servers
-- adding a custom docker-compose file to the servers on a specified folder

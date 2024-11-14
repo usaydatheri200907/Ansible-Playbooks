@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  monitoring:
+    driver: bridge
+
+services:
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - '/:/host:ro,rslave'
+    command:
+      - '--path.rootfs=/host'
+    networks:
+      - monitoring
+    labels:
+      - "environment=production"
+
+  openvpn-exporter:
+    container_name: exporter
+    image: kumina/openvpn-exporter
+    restart: unless-stopped
+    ports:
+      - "9176:9176"
+    volumes:
+    # Mapping the openvpn-status logs from different directories to the container
+      - "/home/ubuntu/openvpn1-logs/openvpn-status.log:/etc/openvpn_exporter/server1.status"
+      - "/home/ubuntu/openvpn2-logs/openvpn-status.log:/etc/openvpn_exporter/server2.status"
+      - "/home/ubuntu/openvpn3-logs/openvpn-status.log:/etc/openvpn_exporter/server3.status"
+    command: -openvpn.status_paths /etc/openvpn_exporter/server1.status,/etc/openvpn_exporter/server2.status,/etc/openvpn_exporter/server3.status
