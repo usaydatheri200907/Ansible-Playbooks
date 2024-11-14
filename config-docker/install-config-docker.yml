@@ -12,6 +12,7 @@
         update_cache: yes
         force_apt_get: yes  # Forces the use of apt-get, which accepts -y for yes
       become: true  # Ensures this task runs with sudo privileges
+      failed_when: false   
 
     - name: Install prerequisites
       apt:
@@ -23,6 +24,7 @@
         state: present
         update_cache: yes
       become: true  # Ensures this task runs with sudo privileges
+      failed_when: false   
 
     - name: Add Docker GPG key
       ansible.builtin.command:
@@ -38,12 +40,14 @@
     - name: Update apt cache again after adding Docker repository
       apt:
         update_cache: yes
+        force_apt_get: yes  # Forces the use of apt-get, which accepts -y for yes
       become: true  # Ensures this task runs with sudo privileges
+      failed_when: false   
 
     - name: Install Docker and Docker Compose
       apt:
         name:
-          - docker
+          - docker-ce
           - docker-compose
         state: present
         force: yes

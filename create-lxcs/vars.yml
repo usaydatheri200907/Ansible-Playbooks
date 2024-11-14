@@ -1,7 +1,8 @@
 containers:
-  - container_name: "test1"
-  - container_name: "test2"
-  - container_name: "test3"
+  - container_name: "openvpn1"
+  - container_name: "openvpn2"
+  - container_name: "openvpn3"
+  - container_name: "openvpn4"
 ssh_public_key_path: "/home/ubuntu/.ssh/authorized_keys"
 remote_server: "https://cloud-images.ubuntu.com/releases/"
 image_alias: "22.04"

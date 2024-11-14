@@ -31,4 +31,5 @@ services:
       - "/home/ubuntu/openvpn1-logs/openvpn-status.log:/etc/openvpn_exporter/server1.status"
       - "/home/ubuntu/openvpn2-logs/openvpn-status.log:/etc/openvpn_exporter/server2.status"
       - "/home/ubuntu/openvpn3-logs/openvpn-status.log:/etc/openvpn_exporter/server3.status"
-    command: -openvpn.status_paths /etc/openvpn_exporter/server1.status,/etc/openvpn_exporter/server2.status,/etc/openvpn_exporter/server3.status
+      - "/home/ubuntu/openvpn4-logs/openvpn-status.log:/etc/openvpn_exporter/server4.status"
+    command: -openvpn.status_paths /etc/openvpn_exporter/server1.status,/etc/openvpn_exporter/server2.status,/etc/openvpn_exporter/server3.status,/etc/openvpn_exporter/server4.status
