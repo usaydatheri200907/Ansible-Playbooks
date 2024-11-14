@@ -7,14 +7,6 @@
     docker_compose_sample_path: "./docker-compose.yml" 
 
   tasks:
-    - name: Ensure 'ubuntu' user is added to sudoers
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers
-        state: present
-        regexp: '^ubuntu ALL=\(ALL\) NOPASSWD: ALL$'
-        line: 'ubuntu ALL=(ALL) NOPASSWD: ALL'
-      become: true  # Ensure root permissions for modifying sudoers
-
     - name: Update and upgrade apt packages
       apt:
         update_cache: yes
